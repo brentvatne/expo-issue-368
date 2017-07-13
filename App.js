@@ -3,21 +3,31 @@ import { StyleSheet, Text, View } from 'react-native';
 import { AppLoading, Font } from 'expo';
 
 export default class App extends React.Component {
-  state = {
-    loaded: false,
+
+  state = { ready: false }
+
+  componentWillMount(){
+    this._loadAssetsAsync();
   }
 
-  componentWillMount() {
-    this._loadFontsAsync();
-  }
-
-  _loadFontsAsync = async () => {
-    await Font.loadAsync({bellefair: require('./Bellefair-Regular.ttf')});
-    this.setState({loaded: true});
+  async _loadAssetsAsync(){
+    try {
+      await Font.loadAsync({
+        'montserrat': require('./assets/fonts/Montserrat-Regular.ttf')
+      });
+    }
+    catch(e) {
+      Log.error(e);
+    }
+    finally {
+      console.log(Font.isLoaded('montserrat'));
+      console.log(Font.style('montserrat'));
+      this.setState({ready: true});
+    }
   }
 
   render() {
-    if (!this.state.loaded) {
+    if (!this.state.ready) {
       return <AppLoading />;
     }
 
@@ -38,7 +48,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   text: {
-    fontFamily: 'bellefair',
+    fontFamily: 'montserrat',
     fontSize: 30,
   },
 });
